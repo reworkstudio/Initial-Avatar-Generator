@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Initial Avatar Generator</title>
+  <style>
+    body {
+      background: #222;
+      color: #eee;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+    #avatar {
+      width: 256px;
+      height: 256px;
+      font-size: 120px;
+      font-weight: bold;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+      user-select: none;
+    }
+    input, select, button {
+      margin: 8px;
+      padding: 8px 12px;
+      font-size: 16px;
+    }
+    canvas {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h2>Initial Avatar Generator</h2>
+  <input id="nickname" type="text" placeholder="Enter nickname" maxlength="20" />
+  <select id="colorSelect">
+    <option value="">Random background color</option>
+  </select>
+  <button id="generateBtn">Generate</button>
+  <button id="downloadBtn">Download PNG</button>
+
+  <div id="avatar">?</div>
+  <canvas id="canvas" width="256" height="256"></canvas>
+
+  <script>
+    const colors = [
+      '#3F9C9C', '#9C9C3F', '#A36E3F', '#F44336', '#E91E63', '#9C27B0', '#673AB7',
+      '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#8BC34A',
+      '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722', '#795548', '#9E9E9E', '#607D8B'
+    ];
+
+    const letterColors = {
+      '#3F9C9C': '#d0f7f7', '#9C9C3F': '#f0f0d0', '#A36E3F': '#dfbf9f', '#F44336': '#ffe6e6',
+      '#E91E63': '#ffd6e8', '#9C27B0': '#efccf7', '#673AB7': '#dfd3ff', '#3F51B5': '#d4dbff',
+      '#2196F3': '#cdeeff', '#03A9F4': '#d1f4ff', '#00BCD4': '#ccf9ff', '#009688': '#ccfffb',
+      '#4CAF50': '#ddffdd', '#8BC34A': '#f0ffd1', '#CDDC39': '#fbffc5', '#FFEB3B': '#fffde0',
+      '#FFC107': '#fff2cc', '#FF9800': '#ffe0cc', '#FF5722': '#ffd9cc', '#795548': '#e2cfc7',
+      '#9E9E9E': '#f0f0f0', '#607D8B': '#dde6ea'
+    };
+
+    const colorSelect = document.getElementById('colorSelect');
+    const avatar = document.getElementById('avatar');
+    const nicknameInput = document.getElementById('nickname');
+    const generateBtn = document.getElementById('generateBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    let currentBgColor = '';
+    let currentLetterColor = '';
+    let currentLetter = '?';
+
+    // Заполняем селект цветами
+    colors.forEach(color => {
+      const option = document.createElement('option');
+      option.value = color;
+      option.textContent = color;
+      colorSelect.appendChild(option);
+    });
+
+    function generateAvatar() {
+      const nick = nicknameInput.value.trim();
+      const bgColor = colorSelect.value || colors[Math.floor(Math.random() * colors.length)];
+      const letterColor = letterColors[bgColor] || '#fff';
+      const letter = nick ? nick[0].toUpperCase() : '?';
+
+      currentBgColor = bgColor;
+      currentLetterColor = letterColor;
+      currentLetter = letter;
+
+      avatar.style.backgroundColor = bgColor;
+      avatar.style.color = letterColor;
+      avatar.textContent = letter;
+    }
+
+    function downloadAvatar() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // фон
+      ctx.fillStyle = currentBgColor || '#000';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // буква с вертикальным сдвигом +10px для центрирования
+      ctx.fillStyle = currentLetterColor || '#fff';
+      ctx.font = 'bold 120px Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      const verticalOffset = 10; // сдвиг вниз
+      ctx.fillText(currentLetter, canvas.width / 2, canvas.height / 2 + verticalOffset);
+
+      // скачиваем
+      const link = document.createElement('a');
+      link.download = 'avatar.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    generateBtn.addEventListener('click', generateAvatar);
+    downloadBtn.addEventListener('click', downloadAvatar);
+
+    // генерация при загрузке
+    generateAvatar();
+  </script>
+</body>
+</html>
