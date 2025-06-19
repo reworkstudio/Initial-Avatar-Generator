@@ -18,7 +18,7 @@
       width: 256px;
       height: 256px;
       font-size: 120px;
-      font-weight: bold;
+      font-weight: lighter; 
       border-radius: 8px;
       display: flex;
       justify-content: center;
@@ -76,7 +76,6 @@
     let currentLetterColor = '';
     let currentLetter = '?';
 
-    // Заполняем селект цветами
     colors.forEach(color => {
       const option = document.createElement('option');
       option.value = color;
@@ -102,19 +101,16 @@
     function downloadAvatar() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // фон
       ctx.fillStyle = currentBgColor || '#000';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // буква с вертикальным сдвигом +10px для центрирования
       ctx.fillStyle = currentLetterColor || '#fff';
       ctx.font = 'bold 120px Arial, sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      const verticalOffset = 10; // сдвиг вниз
+      const verticalOffset = 10;
       ctx.fillText(currentLetter, canvas.width / 2, canvas.height / 2 + verticalOffset);
 
-      // скачиваем
       const link = document.createElement('a');
       link.download = 'avatar.png';
       link.href = canvas.toDataURL('image/png');
@@ -124,7 +120,6 @@
     generateBtn.addEventListener('click', generateAvatar);
     downloadBtn.addEventListener('click', downloadAvatar);
 
-    // генерация при загрузке
     generateAvatar();
   </script>
 </body>
