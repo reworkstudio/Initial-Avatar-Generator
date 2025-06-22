@@ -195,7 +195,9 @@
     colors.forEach(color => {
       const option = document.createElement('option');
       option.value = color;
-      option.textContent = color;
+      // теперь показывает цвета рядом с текстом, так короче удобней
+      option.textContent = '🔆 ' + color;
+      option.style.color = color;
       colorSelect.appendChild(option);
     });
 
